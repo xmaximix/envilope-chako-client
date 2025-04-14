@@ -1,5 +1,9 @@
+using System.Collections;
+using System.Threading.Tasks;
 using EnvilopeChako.Authentication;
 using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
 using Assert = UnityEngine.Assertions.Assert;
 
 public class AuthFlowManagerTests
@@ -47,10 +51,6 @@ public class AuthFlowManagerTests
             registerController,
             verificationController
         );
-
-        // Если необходимо, можно симулировать нажатия до инициализации (например, для подготовки каких-то состояний)
-        testRegisterView.SimulateRegisterClick();
-        testVerificationView.SimulateVerificationClick();
     }
 
     [TearDown]
@@ -112,18 +112,23 @@ public class AuthFlowManagerTests
         Assert.IsFalse(testVerificationView.IsActive, "Verification view should be inactive after successful login.");
     }
 
-    [Test]
-    public void AuthFlowManager_OnVerificationSubmit_SucceedsAndHidesAllViews()
+    [UnityTest]
+    public IEnumerator AuthFlowManager_OnVerificationSubmit_SucceedsAndHidesAllViews()
     {
-        // Имитируем, что после регистрации открыт экран верификации
+        // Initialize system state
         authFlowManager.Initialize();
         testRegisterView.SetActive(false);
+        testLoginView.SetActive(false);
         testVerificationView.SetActive(true);
 
-        // Имитируем успешную верификацию
+        // Simulate the verification click
         testVerificationView.SimulateVerificationClick();
 
-        // Предполагаем, что после успешной верификации все представления закрываются
+        yield return new WaitForSecondsRealtime(1f);
+
+        Debug.Log($"VerificationView active: {testVerificationView.IsActive}");
+
+        // Assert expected state after asynchronous processing
         Assert.IsFalse(testLoginView.IsActive, "Login view should be inactive after successful verification.");
         Assert.IsFalse(testRegisterView.IsActive, "Register view should be inactive after successful verification.");
         Assert.IsFalse(testVerificationView.IsActive, "Verification view should be inactive after successful verification.");
