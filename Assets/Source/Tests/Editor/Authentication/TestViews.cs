@@ -1,0 +1,76 @@
+using EnvilopeChako.Authentication; 
+using System;
+using R3;
+
+public class TestRegisterView : IRegisterView
+{
+    private readonly Subject<Unit> onRegisterSubmitClicked = new Subject<Unit>();
+    public Observable<Unit> OnRegisterSubmitClicked => onRegisterSubmitClicked;
+
+    public string NicknameInput { get; set; }
+    public string EmailInput { get; set; }
+    public string PasswordInput { get; set; }
+    public bool IsActive { get; private set; }
+    public string Message { get; private set; }
+
+    public void SimulateRegisterClick()
+    {
+        onRegisterSubmitClicked.OnNext(Unit.Default);
+    }
+
+    public void ShowMessage(string message)
+    {
+        Message = message;
+    }
+
+    public void SetActive(bool isActive)
+    {
+        IsActive = isActive;
+    }
+}
+
+public class TestVerificationView : IVerificationView
+{
+    private readonly Subject<Unit> onVerificationSubmitClicked = new Subject<Unit>();
+
+    public Observable<Unit> OnVerificationSubmitClicked => onVerificationSubmitClicked;
+
+    public string VerificationCodeInput { get; set; }
+    public bool IsActive { get; private set; }
+    public string Message { get; private set; }
+
+    public void SimulateVerificationClick()
+    {
+        onVerificationSubmitClicked.OnNext(Unit.Default);
+    }
+
+    public void ShowMessage(string message)
+    {
+        Message = message;
+    }
+
+    public void SetActive(bool isActive)
+    {
+        IsActive = isActive;
+    }
+}
+
+public class TestLoginView : ILoginView
+{
+    public string EmailInput { get; set; }
+    public string PasswordInput { get; set; }
+    public bool IsActive { get; private set; }
+    public string Message { get; private set; }
+    
+    private readonly Subject<Unit> onLoginSubmitClicked = new Subject<Unit>();
+    public Observable<Unit> OnLoginSubmitClicked => onLoginSubmitClicked;
+    public void ShowMessage(string message)
+    {
+        Message = message;
+    }
+
+    public void SetActive(bool isActive)
+    {
+        IsActive = isActive;
+    }
+}
