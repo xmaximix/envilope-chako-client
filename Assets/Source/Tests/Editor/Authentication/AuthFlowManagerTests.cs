@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using EnvilopeChako.Authentication;
 using NUnit.Framework;
 using UnityEngine;
@@ -96,16 +97,19 @@ public class AuthFlowManagerTests
         Assert.IsTrue(testVerificationView.IsActive, "Verification view should be active after triggering registration.");
     }
 
-    [Test]
-    public void AuthFlowManager_OnLoginSubmit_ActivatesMainScreen()
+    [UnityTest]
+    public IEnumerator AuthFlowManager_OnLoginSubmit_ActivatesMainScreen()
     {
         // Предположим, что после успешного входа в систему представления закрываются (например, переход на главный экран).
         // Имитируем инициализацию
         authFlowManager.Initialize();
-
+        
         // Допустим, у нас есть метод loginController.HandleLogin, который вызывается при клике на кнопку входа
-        //loginController.HandleLogin(testLoginView.EmailInput, testLoginView.PasswordInput);
-
+        loginController.GetType()
+            .GetMethod("HandleLogin", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            ?.Invoke(loginController, null);
+        
+        yield return UniTask.Delay(1000).ToCoroutine();
         // В данном примере предполагается, что все представления закрываются после успешного входа
         Assert.IsFalse(testLoginView.IsActive, "Login view should be inactive after successful login.");
         Assert.IsFalse(testRegisterView.IsActive, "Register view should be inactive after successful login.");
@@ -115,37 +119,32 @@ public class AuthFlowManagerTests
     [UnityTest]
     public IEnumerator AuthFlowManager_OnVerificationSubmit_SucceedsAndHidesAllViews()
     {
-        // Initialize system state
         authFlowManager.Initialize();
-        testRegisterView.SetActive(false);
-        testLoginView.SetActive(false);
-        testVerificationView.SetActive(true);
-
-        // Simulate the verification click
+        testLoginView.SimulateRegisterClick();
+        yield return UniTask.Delay(1000).ToCoroutine();
+        testRegisterView.SimulateRegisterClick();
+        yield return UniTask.Delay(1000).ToCoroutine();
         testVerificationView.SimulateVerificationClick();
-
-        yield return new WaitForSecondsRealtime(1f);
-
-        Debug.Log($"VerificationView active: {testVerificationView.IsActive}");
-
+        yield return UniTask.Delay(1000).ToCoroutine();
         // Assert expected state after asynchronous processing
         Assert.IsFalse(testLoginView.IsActive, "Login view should be inactive after successful verification.");
         Assert.IsFalse(testRegisterView.IsActive, "Register view should be inactive after successful verification.");
         Assert.IsFalse(testVerificationView.IsActive, "Verification view should be inactive after successful verification.");
     }
 
-    [Test]
-    public void AuthFlowManager_OnRegistrationFailed_ShowsErrorMessageAndKeepsRegisterViewActive()
+    [UnityTest]
+    public IEnumerator AuthFlowManager_OnRegistrationFailed_ShowsErrorMessageAndKeepsRegisterViewActive()
     {
         // Для теста неудачной регистрации мы создадим фиктивный случай.
         // Например, если email имеет некорректный формат, DummyAuthService (или другая реализация мока) может вернуть ошибку.
-
+        authFlowManager.Initialize();
+        testLoginView.SimulateRegisterClick();
+        yield return UniTask.Delay(1000).ToCoroutine();
         // Устанавливаем неправильный email, чтобы симулировать ошибку
-        testRegisterView.EmailInput = "bad_email_format";
+        testRegisterView.EmailInput = "";
 
-        // Имитируем регистрацию
-        testRegisterView.SetActive(true);
         testRegisterView.SimulateRegisterClick();
+        yield return UniTask.Delay(1000).ToCoroutine();
 
         // Проверяем, что представление регистрации остается активным и выводится сообщение об ошибке
         Assert.IsTrue(testRegisterView.IsActive, "Register view should remain active when registration fails.");

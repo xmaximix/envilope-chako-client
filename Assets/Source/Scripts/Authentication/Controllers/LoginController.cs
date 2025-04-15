@@ -7,9 +7,15 @@ namespace EnvilopeChako.Authentication
     {
         private readonly ILoginView loginView;
         private readonly IAuthService authService;
-        private readonly CompositeDisposable disposables = new CompositeDisposable();
+        private readonly CompositeDisposable disposables = new();
 
-        public event Action OnLoginSuccess;
+        // Вместо Action создаём реактивный поток для успешного логина
+        private readonly Subject<Unit> loginSuccessSubject = new();
+        // Аналог для запроса открытия регистрации
+        private readonly Subject<Unit> registerOpenSubject = new();
+
+        public Observable<Unit> OnLoginSuccess => loginSuccessSubject;
+        public Observable<Unit> OnRegisterRequested => registerOpenSubject;
 
         public LoginController(ILoginView loginView, IAuthService authService)
         {
@@ -19,8 +25,14 @@ namespace EnvilopeChako.Authentication
 
         public void Initialize()
         {
+            // Подписываемся на поток кликов на кнопку логина
             loginView.OnLoginSubmitClicked
                 .Subscribe(_ => HandleLogin())
+                .AddTo(disposables);
+
+            // Подписываемся на событие открытия регистрации
+            loginView.OnRegisterClicked
+                .Subscribe(_ => registerOpenSubject.OnNext(Unit.Default))
                 .AddTo(disposables);
         }
 
@@ -31,7 +43,7 @@ namespace EnvilopeChako.Authentication
             if (result)
             {
                 loginView.ShowMessage("Login successful!");
-                OnLoginSuccess?.Invoke();
+                loginSuccessSubject.OnNext(Unit.Default);
             }
             else
             {
@@ -42,6 +54,8 @@ namespace EnvilopeChako.Authentication
         public void Dispose()
         {
             disposables.Dispose();
+            loginSuccessSubject.OnCompleted();
+            registerOpenSubject.OnCompleted();
         }
     }
 }

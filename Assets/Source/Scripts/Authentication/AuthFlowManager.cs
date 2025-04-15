@@ -1,4 +1,5 @@
 using System;
+using R3;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -14,6 +15,8 @@ namespace EnvilopeChako.Authentication
         private readonly RegisterController registerController;
         private readonly VerificationController verificationController;
 
+        private readonly CompositeDisposable disposables = new();
+        
         public AuthFlowManager(
             ILoginView loginView,
             IRegisterView registerView,
@@ -40,9 +43,27 @@ namespace EnvilopeChako.Authentication
             verificationController.Initialize();
             loginController.Initialize();
 
-            registerController.OnRegistrationInitiated += ShowVerificationScreen;
-            verificationController.OnVerificationSuccess += OnVerificationSuccess;
-            loginController.OnLoginSuccess += OnLoginSuccess;
+            loginController.OnLoginSuccess
+                .Subscribe(_ => OnLoginSuccess())
+                .AddTo(disposables);
+            
+            loginController.OnRegisterRequested
+                .Subscribe(_ => OnRegisterRequested())
+                .AddTo(disposables);
+
+            registerController.OnRegistrationInitiated
+                .Subscribe(_ => ShowVerificationScreen())
+                .AddTo(disposables);
+
+            verificationController.OnVerificationSuccess
+                .Subscribe(_ => OnVerificationSuccess())
+                .AddTo(disposables);
+        }
+
+        private void OnRegisterRequested()
+        {
+            loginView.SetActive(false);
+            registerView.SetActive(true);
         }
 
         private void ShowVerificationScreen()

@@ -16,10 +16,14 @@ namespace EnvilopeChako.Authentication
 
         [SerializeField] private TMP_InputField passwordInputField;
         [SerializeField] private Button loginSubmitButton;
+        [SerializeField] private Button registerButton;
         [SerializeField] private TextMeshProUGUI messageText;
 
         public Observable<Unit> OnLoginSubmitClicked =>
             loginSubmitButton.OnClickAsObservable();
+        
+        public Observable<Unit> OnRegisterClicked =>
+            registerButton.OnClickAsObservable();
 
         public string EmailInput => emailInputField.text;
         public string PasswordInput => passwordInputField.text;

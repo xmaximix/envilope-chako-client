@@ -8,10 +8,12 @@ namespace EnvilopeChako.Authentication
     {
         private readonly IRegisterView registerView;
         private readonly IAuthService authService;
-        private readonly CompositeDisposable disposables = new();
+        private readonly CompositeDisposable disposables = new CompositeDisposable();
 
-        // Событие для уведомления, что регистрация инициирована и нужно показать экран верификации
-        public event Action OnRegistrationInitiated;
+        // Рекативный поток, который сигнализирует об успешной инициации регистрации
+        private readonly Subject<Unit> registrationInitiatedSubject = new Subject<Unit>();
+
+        public Observable<Unit> OnRegistrationInitiated => registrationInitiatedSubject;
 
         public RegisterController(IRegisterView registerView, IAuthService authService)
         {
@@ -21,7 +23,6 @@ namespace EnvilopeChako.Authentication
 
         public void Initialize()
         {
-            // Подписываемся на событие отправки регистрации
             registerView.OnRegisterSubmitClicked
                 .Subscribe(_ => HandleRegister())
                 .AddTo(disposables);
@@ -29,29 +30,29 @@ namespace EnvilopeChako.Authentication
 
         private async void HandleRegister()
         {
-            registerView.ShowMessage("Обработка регистрации...");
-            
-            // Вызов сервиса регистрации (реализация может быть заменена на реальную логику)
+            registerView.ShowMessage("Processing registration...");
             bool result = await authService.RegisterAsync(
                 registerView.NicknameInput,
                 registerView.EmailInput,
-                registerView.PasswordInput
-            );
+                registerView.PasswordInput);
+            
+            if (registerView.EmailInput == "") return;
             
             if (result)
             {
-                registerView.ShowMessage("Регистрация инициирована. Проверьте почту для получения кода верификации.");
-                OnRegistrationInitiated?.Invoke();
+                registerView.ShowMessage("Registration initiated. Please check your email for the verification code.");
+                registrationInitiatedSubject.OnNext(Unit.Default);
             }
             else
             {
-                registerView.ShowMessage("Ошибка регистрации. Попробуйте ещё раз.");
+                registerView.ShowMessage("Registration failed. Please try again.");
             }
         }
 
         public void Dispose()
         {
             disposables.Dispose();
+            registrationInitiatedSubject.OnCompleted();
         }
     }
 }

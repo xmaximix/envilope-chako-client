@@ -1,10 +1,11 @@
 using EnvilopeChako.Authentication; 
 using System;
 using R3;
+using UnityEngine;
 
 public class TestRegisterView : IRegisterView
 {
-    private readonly Subject<Unit> onRegisterSubmitClicked = new Subject<Unit>();
+    private readonly Subject<Unit> onRegisterSubmitClicked = new();
     public Observable<Unit> OnRegisterSubmitClicked => onRegisterSubmitClicked;
 
     public string NicknameInput { get; set; }
@@ -20,6 +21,7 @@ public class TestRegisterView : IRegisterView
 
     public void ShowMessage(string message)
     {
+        Debug.Log(message);
         Message = message;
     }
 
@@ -57,13 +59,26 @@ public class TestVerificationView : IVerificationView
 
 public class TestLoginView : ILoginView
 {
+    private readonly Subject<Unit> registerOpenSubject = new();
+    public Observable<Unit> OnRegisterClicked => registerOpenSubject;
     public string EmailInput { get; set; }
     public string PasswordInput { get; set; }
     public bool IsActive { get; private set; }
     public string Message { get; private set; }
     
-    private readonly Subject<Unit> onLoginSubmitClicked = new Subject<Unit>();
+    private readonly Subject<Unit> onLoginSubmitClicked = new();
     public Observable<Unit> OnLoginSubmitClicked => onLoginSubmitClicked;
+    
+    public void SimulateLoginClick()
+    {
+        onLoginSubmitClicked.OnNext(Unit.Default);
+    }
+    
+    public void SimulateRegisterClick()
+    {
+        registerOpenSubject.OnNext(Unit.Default);
+    }
+    
     public void ShowMessage(string message)
     {
         Message = message;
