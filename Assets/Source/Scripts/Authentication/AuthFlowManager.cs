@@ -59,6 +59,7 @@ namespace EnvilopeChako.Authentication
 
         private void OnLoginSuccess()
         {
+            loginView.SetActive(false);
             Debug.Log("Login completed successfully.");
         }
 

@@ -8,7 +8,7 @@ namespace EnvilopeChako.Authentication
         {
             await UniTask.Delay(1000);
             return true;
-        }
+        }   
 
         public async UniTask<bool> LoginAsync(string email, string password)
         {

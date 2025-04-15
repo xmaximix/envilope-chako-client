@@ -5,12 +5,12 @@ using VContainer.Unity;
 
 namespace EnvilopeChako.Common
 {
-    public class UnifiedEntryPoint : IStartable, IDisposable
+    public class MenuEntryPoint : IStartable, IDisposable
     {
         private readonly AuthFlowManager authFlowManager;
-        private readonly CompositeDisposable disposables = new CompositeDisposable();
+        private readonly CompositeDisposable disposables = new();
 
-        public UnifiedEntryPoint(AuthFlowManager authFlowManager)
+        public MenuEntryPoint(AuthFlowManager authFlowManager)
         {
             this.authFlowManager = authFlowManager;
         }
