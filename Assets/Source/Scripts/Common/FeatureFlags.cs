@@ -18,10 +18,7 @@ namespace EnvilopeChako.Common
     {
         private readonly FeatureFlags _flags;
 
-        public ScriptableFeatureToggle(FeatureFlags flags)
-        {
-            _flags = flags;
-        }
+        public ScriptableFeatureToggle(FeatureFlags flags) => _flags = flags;
 
         public bool IsEnabled(string key)
         {

@@ -48,22 +48,22 @@ namespace EnvilopeChako.Modules.Authentication.Presentation.Views
         protected override void Bind()
         {
             AddSubscription(
-                nicknameField.OnValueChangedAsObservable(this.destroyCancellationToken)
+                nicknameField.OnValueChangedAsObservable(destroyCancellationToken)
                     .Subscribe(x => ViewModel.Nickname.Value = x)
             );
             AddSubscription(
-                emailField.OnValueChangedAsObservable(this.destroyCancellationToken)
+                emailField.OnValueChangedAsObservable(destroyCancellationToken)
                     .Subscribe(x => ViewModel.Email.Value = x)
             );
             AddSubscription(
-                passwordField.OnValueChangedAsObservable(this.destroyCancellationToken)
+                passwordField.OnValueChangedAsObservable(destroyCancellationToken)
                     .Subscribe(x => ViewModel.Password.Value = x)
             );
             AddSubscription(
                 ViewModel.CanSubmit.Subscribe(ok => submitButton.interactable = ok)
             );
             AddSubscription(
-                submitButton.OnClickAsObservable(this.destroyCancellationToken)
+                submitButton.OnClickAsObservable(destroyCancellationToken)
                     .SubscribeAwait(async (_, ct) => await ViewModel.SubmitAsync(ct),
                         AwaitOperation.Drop)
             );

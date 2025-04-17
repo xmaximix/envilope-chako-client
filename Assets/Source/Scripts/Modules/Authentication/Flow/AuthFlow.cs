@@ -29,7 +29,7 @@ namespace EnvilopeChako.Modules.Authentication.Flow
                 .Permit(AuthTrigger.Registered, AuthState.Verify);
             _sm.Configure(AuthState.Verify)
                 .OnEntry(() => _log.Info("Authentication complete"));
-            
+
             var rp = new ReactiveProperty<AuthState>(_sm.State);
             _sm.OnTransitioned(transition =>
             {
@@ -50,6 +50,9 @@ namespace EnvilopeChako.Modules.Authentication.Flow
             _log.Info($"AuthFlow starting at state {_sm.State}");
         }
 
-        public void Dispose() => _bag.Dispose();
+        public void Dispose()
+        {
+            _bag.Dispose();
+        }
     }
 }

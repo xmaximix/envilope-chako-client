@@ -8,7 +8,7 @@ namespace EnvilopeChako.Modules.Authentication.Domain
 
         public bool IsSuccess => Error == null;
 
-        public static Result Ok => new Result { Error = null, Code = 0, Context = string.Empty };
+        public static Result Ok => new() { Error = null, Code = 0, Context = string.Empty };
 
         public static Result Fail(string message, int code = 1, string context = "")
         {

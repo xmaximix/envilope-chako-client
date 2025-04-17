@@ -8,34 +8,34 @@ namespace EnvilopeChako.Modules.Authentication.Presentation.ViewModels
 {
     public class RegisterViewModel : System.IDisposable
     {
-        public ReactiveProperty<string> Nickname  { get; }
-        public ReactiveProperty<string> Email     { get; }
-        public ReactiveProperty<string> Password  { get; }
+        public ReactiveProperty<string> Nickname { get; }
+        public ReactiveProperty<string> Email { get; }
+        public ReactiveProperty<string> Password { get; }
         public ReadOnlyReactiveProperty<bool> CanSubmit { get; }
 
-        private readonly Subject<Unit> _initiated = new Subject<Unit>();
+        private readonly Subject<Unit> _initiated = new();
         public Observable<Unit> OnInitiated => _initiated;
 
         private readonly IRegisterUseCase _useCase;
-        private readonly ILogger           _log;
-        private DisposableBag              _bag;
+        private readonly ILogger _log;
+        private DisposableBag _bag;
 
         public RegisterViewModel(IRegisterUseCase useCase, ILogger log)
         {
             _useCase = useCase;
-            _log     = log;
+            _log = log;
 
             Nickname = new ReactiveProperty<string>(string.Empty);
-            Email    = new ReactiveProperty<string>(string.Empty);
+            Email = new ReactiveProperty<string>(string.Empty);
             Password = new ReactiveProperty<string>(string.Empty);
 
             _bag = new DisposableBag();
 
             CanSubmit = Observable
-                .CombineLatest(Nickname, Email, Password, 
-                    (n, e, p) => 
-                        !string.IsNullOrWhiteSpace(n) && 
-                        !string.IsNullOrWhiteSpace(e) && 
+                .CombineLatest(Nickname, Email, Password,
+                    (n, e, p) =>
+                        !string.IsNullOrWhiteSpace(n) &&
+                        !string.IsNullOrWhiteSpace(e) &&
                         p.Length >= 6)
                 .ToReadOnlyReactiveProperty()
                 .AddTo(ref _bag);

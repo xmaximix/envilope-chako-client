@@ -12,9 +12,9 @@ namespace EnvilopeChako.Extensions
             CancellationToken cancellationToken = default)
         {
             var obs = Observable.FromEvent<UnityAction, Unit>(
-                conversion: handler => () => handler(Unit.Default),
-                addHandler:    h => button.onClick.AddListener(h),
-                removeHandler: h => button.onClick.RemoveListener(h)
+                handler => () => handler(Unit.Default),
+                h => button.onClick.AddListener(h),
+                h => button.onClick.RemoveListener(h)
             );
 
             return cancellationToken == default

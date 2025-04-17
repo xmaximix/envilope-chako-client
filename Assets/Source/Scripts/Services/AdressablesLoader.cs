@@ -1,10 +1,8 @@
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
-using AsyncOperation = System.ComponentModel.AsyncOperation;
 
 namespace EnvilopeChako.Services
 {
@@ -21,19 +19,30 @@ namespace EnvilopeChako.Services
 
         public void Release()
         {
-            Addressables.ReleaseInstance(Instance.gameObject);
+            if (Handle.IsValid() && Instance != null)
+            {
+                try
+                {
+                    Addressables.ReleaseInstance(Instance.gameObject);
+                }
+                catch (MissingReferenceException)
+                {
+                }
+            }
         }
     }
 
-    public static class AddressablesLoader
+    public class AddressablesLoader
     {
-        public static async UniTask<AddressableHandle<T>> LoadAsync<T>(string key) where T : Component
+        public static async UniTask<AddressableHandle<T>> LoadAsync<T>(
+            string key,
+            Transform parent = null
+        ) where T : Component
         {
-            var h = Addressables.LoadAssetAsync<GameObject>(key);
-            await h.Task;
-            var go = Object.Instantiate(h.Result);
-            var comp = go.GetComponent<T>();
-            return new AddressableHandle<T>(h, comp);
+            var handle = Addressables.InstantiateAsync(key, parent);
+            await handle.Task;
+            var comp = handle.Result.GetComponent<T>();
+            return new AddressableHandle<T>(handle, comp);
         }
 
         public static async UniTask<SceneInstance> LoadSceneAsync(string key)

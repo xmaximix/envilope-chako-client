@@ -10,7 +10,7 @@ namespace EnvilopeChako.Common
         /// </summary>
         public static UniTask SimulateNetworkLatency(int minMs = 100, int maxMs = 1000, DelayType delayType = DelayType.UnscaledDeltaTime)
         {
-            int ms = Random.Range(minMs, maxMs);
+            var ms = Random.Range(minMs, maxMs);
             return UniTask.Delay(ms, delayType);
         }
     }

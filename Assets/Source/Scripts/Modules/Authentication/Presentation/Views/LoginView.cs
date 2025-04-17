@@ -29,9 +29,6 @@ namespace EnvilopeChako.Modules.Authentication.Presentation.Views
         private AddressableHandle<LoginView> _handle;
         private IStringTable _strings;
 
-        /// <summary>
-        /// Call this instead of Init. Pass in the DI‑resolved dependencies.
-        /// </summary>
         public async UniTask InitAsync(
             LoginViewModel vm,
             IStringTable strings,
@@ -56,36 +53,36 @@ namespace EnvilopeChako.Modules.Authentication.Presentation.Views
             // Field bindings
             AddSubscription(
                 emailField
-                  .OnValueChangedAsObservable(this.destroyCancellationToken)
-                  .Subscribe(x => ViewModel.Email.Value = x)
+                    .OnValueChangedAsObservable(destroyCancellationToken)
+                    .Subscribe(x => ViewModel.Email.Value = x)
             );
             AddSubscription(
                 passwordField
-                  .OnValueChangedAsObservable(this.destroyCancellationToken)
-                  .Subscribe(x => ViewModel.Password.Value = x)
+                    .OnValueChangedAsObservable(destroyCancellationToken)
+                    .Subscribe(x => ViewModel.Password.Value = x)
             );
 
             // Enable/disable submit
             AddSubscription(
                 ViewModel.CanSubmit
-                  .Subscribe(ok => submitButton.interactable = ok)
+                    .Subscribe(ok => submitButton.interactable = ok)
             );
 
             // Click → SubmitAsync
             AddSubscription(
                 submitButton
-                  .OnClickAsObservable(this.destroyCancellationToken)
-                  .SubscribeAwait(async (_, ct) => await ViewModel.SubmitAsync(ct),
-                                  AwaitOperation.Drop)
+                    .OnClickAsObservable(destroyCancellationToken)
+                    .SubscribeAwait(async (_, ct) => await ViewModel.SubmitAsync(ct),
+                        AwaitOperation.Drop)
             );
 
             // Success → localized message
             AddSubscription(
                 ViewModel.OnSuccess
-                  .Subscribe(_ =>
-                   {
-                       messageText.text = _strings.Get(successKey);
-                   })
+                    .Subscribe(_ =>
+                    {
+                        messageText.text = _strings.Get(successKey);
+                    })
             );
         }
 

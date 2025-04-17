@@ -14,7 +14,7 @@ namespace EnvilopeChako.Modules.Authentication.Domain
             Level = LogLevel.Error;
             UserFacing = true;
         }
-        
+
         public Error(string message, LogLevel level, bool userFacing)
         {
             Message = message;

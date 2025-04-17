@@ -11,8 +11,17 @@ namespace EnvilopeChako.Common
 
     public class UnityLogger : ILogger
     {
-        public void Info(string msg) => Debug.Log(msg);
-        public void Warn(string msg) => Debug.LogWarning(msg);
-        public void Error(string msg, System.Exception ex = null) => Debug.LogError(msg + (ex != null ? "\n" + ex : string.Empty));
+        public void Info(string msg)
+        {
+            Debug.Log(msg);
+        }
+        public void Warn(string msg)
+        {
+            Debug.LogWarning(msg);
+        }
+        public void Error(string msg, System.Exception ex = null)
+        {
+            Debug.LogError(msg + (ex != null ? "\n" + ex : string.Empty));
+        }
     }
 }

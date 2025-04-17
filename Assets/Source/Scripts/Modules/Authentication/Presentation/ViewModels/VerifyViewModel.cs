@@ -11,17 +11,17 @@ namespace EnvilopeChako.Modules.Authentication.Presentation.ViewModels
         public ReactiveProperty<string> Code { get; }
         public ReadOnlyReactiveProperty<bool> CanSubmit { get; }
 
-        private readonly Subject<Unit> _success = new Subject<Unit>();
+        private readonly Subject<Unit> _success = new();
         public Observable<Unit> OnSuccess => _success;
 
         private readonly IVerifyUseCase _useCase;
-        private readonly ILogger         _log;
-        private DisposableBag            _bag;
+        private readonly ILogger _log;
+        private DisposableBag _bag;
 
         public VerifyViewModel(IVerifyUseCase useCase, ILogger log)
         {
             _useCase = useCase;
-            _log     = log;
+            _log = log;
 
             Code = new ReactiveProperty<string>(string.Empty);
             _bag = new DisposableBag();

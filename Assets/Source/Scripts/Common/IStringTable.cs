@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace EnvilopeChako.Common
 {
     public interface IStringTable
@@ -8,18 +6,9 @@ namespace EnvilopeChako.Common
     }
 
     [System.Serializable]
-    public struct LocalizationEntry { public string Key; public string Value; }
-
-    [CreateAssetMenu(menuName = "Config/LocalizationTable")]
-    public class LocalizationTable : ScriptableObject, IStringTable
+    public struct LocalizationEntry
     {
-        public LocalizationEntry[] entries;
-
-        public string Get(string key)
-        {
-            foreach (var e in entries)
-                if (e.Key == key) return e.Value;
-            return key;
-        }
+        public string Key;
+        public string Value;
     }
 }

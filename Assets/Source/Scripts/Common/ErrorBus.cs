@@ -7,6 +7,9 @@ namespace EnvilopeChako.Common
     {
         private static readonly Subject<Error> _bus = new();
         public static Observable<Error> Errors => _bus;
-        public static void Push(Error err) => _bus.OnNext(err);
+        public static void Push(Error err)
+        {
+            _bus.OnNext(err);
+        }
     }
 }

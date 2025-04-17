@@ -13,7 +13,7 @@ namespace EnvilopeChako.DI
 
         private void SetupInstallers(IContainerBuilder builder)
         {
-            var installers = GetComponentsInChildren<IInstaller>();
+            var installers = GetComponentsInChildren<IInstaller>(true);
             foreach (var installer in installers) installer.Install(builder);
         }
     }

@@ -12,7 +12,7 @@ namespace EnvilopeChako.Services
     public class GameObjectPool<T> : IPool<T> where T : Component
     {
         private readonly T _prefab;
-        private readonly Stack<T> _stack = new Stack<T>();
+        private readonly Stack<T> _stack = new();
         private readonly Transform _parent;
 
         public GameObjectPool(T prefab, Transform parent)

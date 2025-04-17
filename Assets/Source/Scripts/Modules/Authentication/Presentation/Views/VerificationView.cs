@@ -1,19 +1,15 @@
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using EnvilopeChako.Common;
 using EnvilopeChako.Extensions;
 using EnvilopeChako.Modules.Authentication.Presentation.ViewModels;
+using EnvilopeChako.Services;
+using R3;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace EnvilopeChako.Modules.Authentication.Presentation.Views
-{
-    // Features/Authentication/Presentation/Views/VerificationView.cs
-using Cysharp.Threading.Tasks;
-using R3;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
-using Common;
-using Services;
-using System.Threading;
-
-namespace Features.Authentication.Presentation.Views
 {
     public class VerificationView : ReactiveView<VerifyViewModel>
     {
@@ -27,7 +23,7 @@ namespace Features.Authentication.Presentation.Views
         [SerializeField] private string successKey = "verification_success";
 
         private AddressableHandle<VerificationView> _handle;
-        private IStringTable                         _strings;
+        private IStringTable _strings;
 
         public async UniTask InitAsync(
             VerifyViewModel vm,
@@ -36,8 +32,8 @@ namespace Features.Authentication.Presentation.Views
             string addressableKeyOverride,
             CancellationToken ct)
         {
-            _strings       = strings;
-            successKey     = successKeyOverride;
+            _strings = strings;
+            successKey = successKeyOverride;
             addressableKey = addressableKeyOverride;
 
             _handle = await AddressablesLoader
@@ -50,23 +46,23 @@ namespace Features.Authentication.Presentation.Views
         protected override void Bind()
         {
             AddSubscription(
-                codeField.OnValueChangedAsObservable(this.destroyCancellationToken)
-                         .Subscribe(x => ViewModel.Code.Value = x)
+                codeField.OnValueChangedAsObservable(destroyCancellationToken)
+                    .Subscribe(x => ViewModel.Code.Value = x)
             );
             AddSubscription(
                 ViewModel.CanSubmit.Subscribe(ok => submitButton.interactable = ok)
             );
             AddSubscription(
-                submitButton.OnClickAsObservable(this.destroyCancellationToken)
-                            .SubscribeAwait(async (_, ct) => await ViewModel.SubmitAsync(ct),
-                                            AwaitOperation.Drop)
+                submitButton.OnClickAsObservable(destroyCancellationToken)
+                    .SubscribeAwait(async (_, ct) => await ViewModel.SubmitAsync(ct),
+                        AwaitOperation.Drop)
             );
             AddSubscription(
                 ViewModel.OnSuccess
-                  .Subscribe(_ =>
-                  {
-                      messageText.text = _strings.Get(successKey);
-                  })
+                    .Subscribe(_ =>
+                    {
+                        messageText.text = _strings.Get(successKey);
+                    })
             );
         }
 
@@ -76,5 +72,4 @@ namespace Features.Authentication.Presentation.Views
             base.OnDestroy();
         }
     }
-}
 }

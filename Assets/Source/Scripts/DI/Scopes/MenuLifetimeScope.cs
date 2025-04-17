@@ -1,4 +1,6 @@
 using EnvilopeChako.Common;
+using EnvilopeChako.Modules.Authentication.Adapters;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 

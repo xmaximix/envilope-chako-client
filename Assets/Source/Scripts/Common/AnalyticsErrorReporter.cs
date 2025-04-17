@@ -3,7 +3,7 @@ using R3;
 
 namespace EnvilopeChako.Common
 {
-    public class AnalyticsErrorReporter : System.IDisposable
+    public class AnalyticsErrorReporter : IDisposable
     {
         private readonly IDisposable _sub;
         private readonly ILogger _log;

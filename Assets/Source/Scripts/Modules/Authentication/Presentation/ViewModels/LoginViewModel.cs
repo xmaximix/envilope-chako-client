@@ -27,8 +27,8 @@ namespace EnvilopeChako.Modules.Authentication.Presentation.ViewModels
             _log = log;
 
             CanSubmit = Disposable.AddTo(Observable
-                    .CombineLatest(Email, Password, (e, p) => !string.IsNullOrWhiteSpace(e) && p.Length >= 6)
-                    .ToReadOnlyReactiveProperty(), ref _bag);
+                .CombineLatest(Email, Password, (e, p) => !string.IsNullOrWhiteSpace(e) && p.Length >= 6)
+                .ToReadOnlyReactiveProperty(), ref _bag);
         }
 
         public async UniTask SubmitAsync(CancellationToken ct)
@@ -48,10 +48,13 @@ namespace EnvilopeChako.Modules.Authentication.Presentation.ViewModels
             else
             {
                 ErrorBus.Push(res.Error);
-                _log.Error("Login failed", new System.Exception(res.Error.Message));
+                _log.Error("Login failed", new Exception(res.Error.Message));
             }
         }
 
-        public void Dispose() => _bag.Dispose();
+        public void Dispose()
+        {
+            _bag.Dispose();
+        }
     }
 }
